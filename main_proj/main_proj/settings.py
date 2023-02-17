@@ -56,7 +56,7 @@ ROOT_URLCONF = 'main_proj.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR], # Remember on same level as manage.py file
+        'DIRS': [os.path.join(BASE_DIR, 'templates')], # Remember on same level as manage.py file
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

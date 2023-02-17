@@ -1,1 +1,53 @@
-<h2>Free Palestine</h2>
+{% extends 'base.html' %}
+
+
+{% comment %}
+-Dynamic load tweet via JS, for Testing and rendering
+-Or How can we load our tweets on the home page without having to reload the page or retype the url
+-This can be done via JavaScript
+{% endcomment %}
+
+{% block content %}
+    <div class='row' id="tweets">
+        Replace me
+    </div>
+
+    <script>
+        const tweetsElement = document.getElementById("tweets")
+        tweetsElement.innerHTML = 'Loading....'
+        const xhr = new XMLHttpRequest()
+        const method = 'GET'
+        const url = "/tweets"
+        const responseType = "json"
+        function LikeBtn(){
+            return "<button class = 'btn btn-primary'>like</button>"
+        }
+        function formatTweetElement(tweet){ // it is a little bit cleaner
+            var formattedTweet = "<div class = 'col-12 col-md-10 mx-auto border mb-4 py-3 rounded' id = 'tweet-" + tweet.id+"' ><h1>" + tweet.id 
+                +"</h1>" + "<p>" + tweet.content +
+                    LikeBtn() +
+                "</p></div>"
+            return formattedTweet
+        }
+
+        // Performing the request
+        xhr.responseType = responseType
+        xhr.open(method, url)
+        xhr.onload = function(){
+            const serverResponse = xhr.response
+            var listedItems = serverResponse.response
+            var finalTweetStr = ""
+            var i;
+            for(i=0; i<listedItems.length; i++){
+                var tweetObj = listedItems[i]
+                var currentItem = formatTweetElement(tweetObj)
+                finalTweetStr += currentItem
+            }
+            
+            tweetsElement.innerHTML = finalTweetStr
+            //console.log(listedItems)
+        }
+        xhr.send()
+    </script>
+
+{% endblock  %}
