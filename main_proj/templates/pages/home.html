@@ -5,20 +5,74 @@
 -Dynamic load tweet via JS, for Testing and rendering
 -Or How can we load our tweets on the home page without having to reload the page or retype the url
 -This can be done via JavaScript
+ - <input type="hidden" value="http://google.com/" name="next">:
+ What this means is: it is for unsafe urls, so in case of unsafe one it will direct u to tweet-create page, and this is done via the redirect imported function
 {% endcomment %}
 
 {% block content %}
-    <div class='row' id="tweets">
-        Replace me
+
+    <div class="row">
+        <div class="col-10 col-md-4 mx-auto">
+            <form class="form" id ='tweet-create-form' method="POST" action="tweet-create">
+                {%  csrf_token %}
+                <input type="hidden" value="/" name="next">
+                <textarea class="form-control" name="content" placeholder="Your tweet...." ></textarea>
+                <button type="submit" class="btn btn-primary">Tweet</button>
+            </form> 
+        </div>
     </div>
 
+    <div class='row' id="tweets">
+        Loading......
+    </div>
+
+    
+
     <script>
-        const tweetsElement = document.getElementById("tweets")
-        tweetsElement.innerHTML = 'Loading....'
-        const xhr = new XMLHttpRequest()
-        const method = 'GET'
-        const url = "/tweets"
-        const responseType = "json"
+        
+        const tweetsEl = document.getElementById("tweets")
+        const tweetCreateFormEl = document.getElementById("tweet-create-form")
+        function handleTweetCreateFormDidSubmit(e){
+            e.preventDefault
+            //const myForm = event.target
+            //const myFormData = new FormData(myForm)
+            //const url = myForm.getAttribute("action")
+            //const method = myForm.getAttribute("method")
+            //const xhr = new XMLHttpRequest()
+            //xhr.open(method, url)
+            //xhr.onload = function(){
+                //const serverResponse = xhr.response
+                //const tweetsEl = document.getElementById("tweets")
+                //loadTweets(tweetsEl)
+            //}
+            //xhr.send(myFormData)
+        }
+        tweetCreateFormEl.addEventListener("submit", handleTweetCreateFormDidSubmit)
+
+        function loadTweets(tweetsElement){
+                const xhr = new XMLHttpRequest()
+                const method = 'GET'
+                const url = "/tweets"
+                const responseType = "json"
+            // Performing the request
+            xhr.responseType = responseType
+            xhr.open(method, url)
+            xhr.onload = function(){
+                const serverResponse = xhr.response
+                var listedItems = serverResponse.response
+                var finalTweetStr = ""
+                var i;
+                for(i=0; i<listedItems.length; i++){
+                    var tweetObj = listedItems[i]
+                    var currentItem = formatTweetElement(tweetObj)
+                    finalTweetStr += currentItem
+                }
+                tweetsElement.innerHTML = finalTweetStr
+                }
+                xhr.send()
+    }
+    loadTweets(tweetsEl)
+        
         function LikeBtn(){
             return "<button class = 'btn btn-primary'>like</button>"
         }
@@ -30,24 +84,9 @@
             return formattedTweet
         }
 
-        // Performing the request
-        xhr.responseType = responseType
-        xhr.open(method, url)
-        xhr.onload = function(){
-            const serverResponse = xhr.response
-            var listedItems = serverResponse.response
-            var finalTweetStr = ""
-            var i;
-            for(i=0; i<listedItems.length; i++){
-                var tweetObj = listedItems[i]
-                var currentItem = formatTweetElement(tweetObj)
-                finalTweetStr += currentItem
-            }
-            
-            tweetsElement.innerHTML = finalTweetStr
-            //console.log(listedItems)
-        }
-        xhr.send()
+        
+        
+        
     </script>
 
 {% endblock  %}

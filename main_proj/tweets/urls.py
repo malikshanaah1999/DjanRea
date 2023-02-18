@@ -6,6 +6,7 @@ from . import views
 
 urlpatterns = [
     path('tweet/<int:tweet_id>', views.tweet_detail_view, name= 'tweet_detail_view'),
-    path('home_view/', views.home_view, name= 'home_view'),
-    path('tweets/', views.tweet_list_view, name= 'tweet_list_view')
+    path('', views.home_view, name= 'home_view'),
+    path('tweets/', views.tweet_list_view, name= 'tweet_list_view'),
+    path('tweet-create', views.tweet_create_view, name= 'tweet_create_view')
 ]
